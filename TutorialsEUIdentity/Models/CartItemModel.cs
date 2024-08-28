@@ -10,7 +10,7 @@ namespace TutorialsEUIdentity.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CartItemId { get; set; }
 
-        public int CartId { get; set; }
+        public Guid CartId { get; set; }
 
         public int Quantity { get; set; }
 
