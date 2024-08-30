@@ -1,0 +1,96 @@
+﻿@model TutorialsEUIdentity.ViewModels.CartItemViewModel
+@{
+    ViewData["Title"] = "Cart";
+}
+<h1>Cart</h1>
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Price
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th>
+            @if (Model.CartItems != null && Model.CartItems.Any())
+            {
+                <a asp-action="ClearEntireCart" class="clearCartItems">clear</a>
+            }      
+        </th>
+    </tr>
+    @if (Model.CartItems != null && Model.CartItems.Any())
+    {
+        @foreach (var item in Model.CartItems)
+        {
+
+            <tr id="row-@item.ProductID">
+                <td>@item.Product.Name</td>
+                <td>@(item.Product.Price)</td>
+                <td id="item-count-@item.ProductID">@item.Quantity</td>
+                <td>
+                    <a asp-action="RemoveItemFromCart" asp-route-id="@item.CartItemId" class="removeFromCart">remove</a>
+                    <a href="#" data-product-id="@item.ProductID" class="addToCart">add</a>
+                    
+                </td>
+            </tr>
+
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="4">Your cart is empty.</td>
+        </tr>
+    }
+    <tr>
+        <td>
+            Total
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td id="cart-total">
+            R@(Model.CartItemTotal)
+        </td>
+    </tr>
+</table>
+
+@section Scripts {
+    <script>
+        //https://stackoverflow.com/questions/63633414/getting-error-uncaught-typeerror-document-queryselectorall-addeventlistene
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.addToCart').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    var productId = this.getAttribute('data-product-id');
+                    //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+                    fetch('@Url.Action("AddItemToCart", "CartItem")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: new URLSearchParams({
+                            'pId': productId
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                location.reload();
+                            } else {
+                                console.error('failed to add');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+    </script>
+
+}
+
