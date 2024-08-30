@@ -39,10 +39,14 @@ button.accept-policy {
   line-height: inherit;
 }
 
+/*
+    https://www.w3schools.com/howto/howto_css_fixed_footer.asp
+*/
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    text-align: left;
 }

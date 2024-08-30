@@ -13,7 +13,11 @@
             <p>@Html.DisplayFor(model => model.Category)</p>
             <p>@Html.DisplayFor(model => model.Description)</p>
             <p>@($"R{Model.Price:N0}")</p>
-            <button class="add-button">Add To Cart</button>
+
+            <form asp-controller="CartItem" asp-action="AddItemToCart" method="post">
+                <input type="hidden" name="pId" value="@Model.Id" />
+                <button class="add-button">Add To Cart</button>
+            </form>
 
         </div>
     </div>
