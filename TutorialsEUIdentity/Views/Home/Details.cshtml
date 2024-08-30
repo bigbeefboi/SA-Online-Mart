@@ -4,15 +4,21 @@
     ViewData["Title"] = "Product Details";
 }
 <div>
-    <div style="display: flex;">
-        <div style="flex: 1;">
-            <img src="@Url.Content("~/Uploads/" + Model.Image)" class="img-thumbnail" alt="Product Image" style="max-width:200px;" />
+    <div class="details-holder" >
+        <div class="details-left">
+            <img src="@Url.Content("~/Uploads/" + Model.Image)" class="img-left" alt="Product Image" />
         </div>
-        <div style="flex: 2; padding-left: 20px;">
+        <div class="details-right">
             <h2>@Html.DisplayFor(model => model.Name)</h2>
             <p>@Html.DisplayFor(model => model.Category)</p>
             <p>@Html.DisplayFor(model => model.Description)</p>
             <p>@($"R{Model.Price:N0}")</p>
+
+            <form asp-controller="CartItem" asp-action="AddItemToCart" method="post">
+                <input type="hidden" name="pId" value="@Model.Id" />
+                <button class="add-button">Add To Cart</button>
+            </form>
+
         </div>
     </div>
 </div>

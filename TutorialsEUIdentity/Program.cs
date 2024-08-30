@@ -24,10 +24,22 @@ namespace TutorialsEUIdentity
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); 
+                options.Cookie.HttpOnly = true; 
+                options.Cookie.IsEssential = true; 
+            });
+
+
+
             // Add services to the controller
             builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
 
 
+            builder.Services.AddScoped<CartItemActions>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //dependency injection
             builder.Services.AddScoped<IRoleManagerService, RoleManagerService>();
             builder.Services.AddScoped<IUserManagerService, UserManagerService>();
@@ -62,25 +74,31 @@ namespace TutorialsEUIdentity
             app.UseStaticFiles(new StaticFileOptions
                 {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(builder.Environment.ContentRootPath, "C:\\Users\\faizy\\source\\repos\\TutorialsEUIdentity\\TutorialsEUIdentity\\Uploads\\")),
+                    Path.Combine(builder.Environment.ContentRootPath, "Uploads\\")),
                 RequestPath = "/Uploads"
                 }
                 );
 
             app.UseStaticFiles();
 
+            app.UseSession();
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
             });
 
+            
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-           
+
+
             /*
             using(var scope = app.Services.CreateScope())
             {
